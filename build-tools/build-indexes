@@ -303,6 +303,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const NATDEX = [9.1, 8.1];
 	// 68 = natdex champs
 	const CHAMPIONS = [9.67, 9.68];
+	const ANIL = [9.15];
 	const OTHER = [
 		9.9, 9.6, 9.411, 9.41, 9.401, 9.4, 9.33, 9.2, -9.4, -9.401,
 		8.6, 8.4, 8.2, -8.4, -8.6,
@@ -312,7 +313,8 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	];
 
 	// process.stdout.write("\n  ");
-	for (const genIdent of [...GENS, ...DOUBLES, ...VGC, ...NFE, ...STADIUM, ...OTHER, ...NATDEX, ...CHAMPIONS, ...LC]) {
+	const genIdents = [...GENS, ...DOUBLES, ...VGC, ...NFE, ...STADIUM, ...OTHER, ...NATDEX, ...CHAMPIONS, ...ANIL, ...LC];
+	for (const genIdent of genIdents) {
 		const isLetsGo = (genIdent === 7.1);
 		const isBDSP = (genIdent === 8.6 || genIdent === -8.6);
 		const isMetBattle = ('' + genIdent).endsWith('.2');
@@ -329,6 +331,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const isSSB = genIdent === 9.6;
 		const isChampions = genIdent === 9.67;
 		const isNDChampions = genIdent === 9.68;
+		const isAnil = genIdent === 9.15;
 		const genNum = Math.floor(isDoubles ? -genIdent : genIdent);
 		const isBW1 = genIdent === 5.1;
 		const isRS = genIdent === 3.1;
@@ -346,10 +349,11 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (isRS) genStr += 'rs';
 			if (isFRLG) genStr += 'frlg';
 			if (isChampions || isNDChampions) genStr = 'champions';
+			if (isAnil) genStr += 'anil';
 			return genStr;
 		})();
 		// process.stdout.write("" + gen + (isDoubles ? " doubles" : "") + "... ");
-		const pokemon = Object.keys(Dex.data.Pokedex);
+		const pokemon = Object.keys(isAnil ? Dex.mod(gen).data.Pokedex : Dex.data.Pokedex);
 		pokemon.sort();
 		const tierTable = {};
 		const overrideTier = {};
@@ -453,7 +457,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				if (isDoubles && genNum > 4) {
 					return species.doublesTier;
 				}
-				if (isNatDex || (isPreDLC && genNum === 9.41) || (isSVDLC1 && genNum === 9.411)) {
+				if (isNatDex || isAnil || (isPreDLC && genNum === 9.41) || (isSVDLC1 && genNum === 9.411)) {
 					return species.natDexTier;
 				}
 				if (isNDChampions) {
@@ -583,6 +587,14 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable['champions'].metagameBans = metagameBans;
 			BattleTeambuilderTable['champions'].overrideTier = overrideTier;
 			BattleTeambuilderTable['champions'].formatSlices = formatSlices;
+		} else if (isAnil) {
+			BattleTeambuilderTable['gen9anil'] = {};
+			BattleTeambuilderTable['gen9anil'].learnsets = {};
+			BattleTeambuilderTable['gen9anil'].tiers = tiers;
+			BattleTeambuilderTable['gen9anil'].items = items;
+			BattleTeambuilderTable['gen9anil'].metagameBans = metagameBans;
+			BattleTeambuilderTable['gen9anil'].overrideTier = overrideTier;
+			BattleTeambuilderTable['gen9anil'].formatSlices = formatSlices;
 		} else if (isNDChampions) {
 			BattleTeambuilderTable['natdexchampions'] = {};
 			BattleTeambuilderTable['natdexchampions'].learnsets = {};
@@ -688,7 +700,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (formatSlices['DUU'] === undefined) formatSlices['DUU'] = formatSlices['New'];
 		}
 
-		const itemList = Object.keys(Dex.data.Items);
+		const itemList = Object.keys(isAnil ? Dex.mod(gen).data.Items : Dex.data.Items);
 		itemList.sort();
 
 		const greatItems = [['header', "Popular items"]];
@@ -704,7 +716,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				continue;
 			}
 			if (item.isNonstandard && !isMetBattle) {
-				if (isNatDex || isNDChampions) {
+				if (isNatDex || isNDChampions || isAnil) {
 					let curItem = item;
 					let curGen = genNum;
 					while (curItem.isNonstandard && curGen >= 7) {
@@ -1106,6 +1118,18 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			}
 		}
 	}
+	const AnilLearnsets = Dex.mod('gen9anil').data.Learnsets;
+	for (const id in AnilLearnsets) {
+		const learnset = AnilLearnsets[id].learnset;
+		if (!learnset) continue;
+		const moves = {};
+		for (const moveid in learnset) {
+			const sources = learnset[moveid].filter(source => source.startsWith('9'));
+			if (!sources.length) continue;
+			moves[moveid] = sources.includes('9E') ? '9e' : '9';
+		}
+		BattleTeambuilderTable['gen9anil'].learnsets[id] = moves;
+	}
 	const SSDLC1Learnsets = Dex.mod('gen8dlc1').data.Learnsets;
 	for (const id in SSDLC1Learnsets) {
 		const learnset = SSDLC1Learnsets[id].learnset;
@@ -1340,8 +1364,6 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	// Mods
 	//
 
-	BattleTeambuilderTable['gen9anil'] = { ...BattleTeambuilderTable['gen9natdex'] };
-
 	for (const mod of CLIENT_MODS) {
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
@@ -1352,6 +1374,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		for (const id in modData.Pokedex) {
 			const modEntry = modDex.species.get(id);
 			const parentEntry = parentDex.species.get(id);
+			if (!parentEntry.exists) {
+				overrideSpeciesData[id] = { ...modData.Pokedex[id], exists: true };
+				continue;
+			}
 			for (const key of overrideSpeciesKeys) {
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideSpeciesData[id]) overrideSpeciesData[id] = {};
@@ -1365,6 +1391,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		for (const id in modData.Moves) {
 			const modEntry = modDex.moves.get(id);
 			const parentEntry = parentDex.moves.get(id);
+			if (!parentEntry.exists) {
+				overrideMoveData[id] = { ...modData.Moves[id], exists: true };
+				continue;
+			}
 			for (const key of overrideMoveKeys) {
 				if (key === 'category' && modDex.gen <= 3) continue;
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
@@ -1379,6 +1409,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		for (const id in modData.Abilities) {
 			const modEntry = modDex.abilities.get(id);
 			const parentEntry = parentDex.abilities.get(id);
+			if (!parentEntry.exists) {
+				overrideAbilityData[id] = { ...modData.Abilities[id], exists: true };
+				continue;
+			}
 			for (const key of overrideAbilityKeys) {
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideAbilityData[id]) overrideAbilityData[id] = {};
@@ -1392,6 +1426,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		for (const id in modData.Items) {
 			const modEntry = modDex.items.get(id);
 			const parentEntry = parentDex.items.get(id);
+			if (!parentEntry.exists) {
+				overrideItemData[id] = { ...modData.Items[id], exists: true };
+				continue;
+			}
 			for (const key of overrideItemKeys) {
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideItemData[id]) overrideItemData[id] = {};
