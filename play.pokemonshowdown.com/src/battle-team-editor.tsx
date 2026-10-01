@@ -12,7 +12,7 @@ import { Dex, type ModdedDex, toID, type ID, PSUtils, TL } from "./battle-dex";
 import { Teams } from './battle-teams';
 import { DexSearch, type SearchRow, type SearchType } from "./battle-dex-search";
 import { PSSearchResults } from "./battle-searchresults";
-import { BattleNatures, type StatName } from "./battle-dex-data";
+import { BattleNatures, type StatName, type Item, type Ability, type Move } from "./battle-dex-data";
 import { BattleStatGuesser, BattleStatOptimizer, BattleTooltips } from "./battle-tooltips";
 import { PSModel } from "./client-core";
 import { Net } from "./client-connection";
@@ -115,16 +115,36 @@ export class TeamEditorState extends PSModel {
 		case 'pokemon':
 			return set.species || '';
 		case 'item':
-			return set.item || '';
+			return this.displayField(type, set.item || '');
 		case 'ability':
-			return set.ability || '';
+			return this.displayField(type, set.ability || '');
 		case 'move':
-			return set.moves[typeIndex] || '';
+			return this.displayField(type, set.moves[typeIndex] || '');
 		case 'nickname':
 			return set.name || '';
 		default:
 			return '';
 		}
+	}
+	displayField(type: InnerFocusType, value: string) {
+		if (!value) return value;
+		let effect: Item | Ability | Move;
+		switch (type) {
+		case 'item':
+			effect = this.dex.items.get(value);
+			break;
+		case 'ability':
+			effect = this.dex.abilities.get(value);
+			break;
+		case 'move':
+			effect = this.dex.moves.get(value);
+			if (effect.id.startsWith('hiddenpower')) return value;
+			break;
+		default:
+			return value;
+		}
+		if (!effect.exists) return value;
+		return this.dex.text.get(effect).name || value;
 	}
 	normalizeField(type: InnerFocusType, value: string): string | null {
 		if (!value.trim()) return '';
@@ -2430,18 +2450,18 @@ class TeamEditorForm extends preact.Component<{
 			case 'item':
 				if (canonical) set.item = canonical;
 				else delete set.item;
-				target.value = canonical;
+				target.value = editor.displayField(focus.type, canonical);
 				break;
 			case 'ability':
 				if (canonical) set.ability = canonical;
 				else delete set.ability;
-				target.value = canonical;
+				target.value = editor.displayField(focus.type, canonical);
 				break;
 			case 'move':
 				if (focus.typeIndex >= set.moves.length && !canonical) return true;
 				while (set.moves.length <= focus.typeIndex) set.moves.push('');
 				set.moves[focus.typeIndex] = canonical;
-				target.value = canonical;
+				target.value = editor.displayField(focus.type, canonical);
 				break;
 			}
 		}
@@ -2853,7 +2873,8 @@ class TeamEditorForm extends preact.Component<{
 		return <input
 			type="text" class="textbox default-placeholder set-field" name={type}
 			data-focus={editor.stringifyFocus({ setIndex, type, typeIndex })}
-			defaultValue={value || ''} placeholder={placeholder} autocomplete="off" readOnly={editor.readonly}
+			defaultValue={editor.displayField(type, value || '')} placeholder={placeholder} autocomplete="off"
+			readOnly={editor.readonly}
 			onMouseDown={this.mouseDownField} onFocus={this.setFocusTextbox}
 			onInput={this.inputField} onKeyDown={this.keyDownField}
 			onBlur={this.blurField}
