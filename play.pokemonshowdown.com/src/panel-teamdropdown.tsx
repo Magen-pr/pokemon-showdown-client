@@ -369,7 +369,7 @@ class FormatDropdownPanel extends PSRoomPanel {
 	format: string | null = null;
 	search = '';
 	openSections = PS.prefs.openformats || {
-		'S/V Singles': true, 'S/V Doubles': true, 'Unofficial Metagames': true, 'National Dex': true,
+		'Pokémon Añil': true, 'S/V Singles': true, 'S/V Doubles': true, 'Unofficial Metagames': true, 'National Dex': true,
 		'Ladder Spotlight': true, 'Other Metagames': true, 'Random Meta of the Decade': true,
 	};
 	click = (e: MouseEvent) => {

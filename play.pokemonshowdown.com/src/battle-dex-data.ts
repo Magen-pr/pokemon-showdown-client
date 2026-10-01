@@ -87,10 +87,6 @@ export class Format implements FormatData {
 		if (this.gen === 8 && this.isBDSP) this.mod = 'gen8bdsp' as ID;
 		if (this.gen === 9 && this.isChampions) this.mod = 'champions' as ID;
 		if (this.gen === 9 && id.startsWith('gen9ail')) this.mod = 'gen9anil' as ID;
-		if (id === 'gen9ailrandomsingles') {
-			this.formeLegality = 'hackmons';
-			this.abilityLegality = 'hackmons';
-		}
 		if (id.includes('almostanyability') || id.includes('aaa')) this.abilityLegality = 'hackmons';
 		if (id.includes('hackmons') || id.includes('bh')) {
 			this.formeLegality = 'hackmons';

@@ -785,7 +785,6 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			this.formatType = 'natdexanil';
 			this.dex = Dex.mod('gen9anil' as ID);
 			format = (format.slice(3) || 'singles') as ID;
-			if (format === 'randomsingles') format = 'purehackmons' as ID;
 		}
 		if (format === 'partnersincrime') this.formatType = 'doubles';
 		if (format.startsWith('ffa') || format === 'freeforall') this.formatType = 'doubles';

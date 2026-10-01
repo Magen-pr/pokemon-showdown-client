@@ -401,7 +401,8 @@ export class BattleLog {
 			break;
 
 		case 'tier':
-			this.addDiv('', `<small>${TL.label(TL`Format`)}</small><br /><strong>` + BattleLog.escapeHTML(args[1]) + '</strong>');
+			const tier = args[1].startsWith(`[Gen ${Dex.gen}] `) ? args[1].slice(`[Gen ${Dex.gen}] `.length) : args[1];
+			this.addDiv('', `<small>${TL.label(TL`Format`)}</small><br /><strong>` + BattleLog.escapeHTML(tier) + '</strong>');
 			break;
 
 		case 'turn':
