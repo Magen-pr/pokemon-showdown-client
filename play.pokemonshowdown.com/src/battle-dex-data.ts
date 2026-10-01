@@ -87,6 +87,10 @@ export class Format implements FormatData {
 		if (this.gen === 8 && this.isBDSP) this.mod = 'gen8bdsp' as ID;
 		if (this.gen === 9 && this.isChampions) this.mod = 'champions' as ID;
 		if (this.gen === 9 && id.startsWith('gen9ail')) this.mod = 'gen9anil' as ID;
+		if (id === 'gen9ailrandomsingles') {
+			this.formeLegality = 'hackmons';
+			this.abilityLegality = 'hackmons';
+		}
 		if (id.includes('almostanyability') || id.includes('aaa')) this.abilityLegality = 'hackmons';
 		if (id.includes('hackmons') || id.includes('bh')) {
 			this.formeLegality = 'hackmons';
@@ -796,37 +800,38 @@ export const BattlePokemonIconIndexes: { [id: string]: number } = {
 	// Añil
 	royaleon: 1644 + 0,
 	cefireon: 1644 + 1,
-	pikachumega: 1644 + 2,
-	gengarmegax: 1644 + 3,
-	venusaurmegay: 1644 + 4,
-	blastoisemegay: 1644 + 5,
-	gengarmegay: 1644 + 6,
-	kinglermega: 1644 + 7,
-	laprasmega: 1644 + 8,
-	machampmega: 1644 + 9,
-	garbodormega: 1644 + 10,
-	corviknightmega: 1644 + 11,
-	orbeetlemega: 1644 + 12,
-	butterfreemega: 1644 + 13,
-	drednawmega: 1644 + 14,
-	coalossalmega: 1644 + 15,
-	flapplemega: 1644 + 16,
-	appletunmega: 1644 + 17,
-	sandacondamega: 1644 + 18,
-	toxtricitymega: 1644 + 19,
-	toxtricitylowkeymega: 1644 + 20,
-	centiskorchmega: 1644 + 21,
-	hatterenemega: 1644 + 22,
-	grimmsnarlmega: 1644 + 23,
-	alcremiemega: 1644 + 24,
-	copperajahmega: 1644 + 25,
-	duraludonmega: 1644 + 26,
-	eeveestartermega: 1644 + 27,
-	jumpluffmega: 1644 + 28,
-	rillaboommega: 1644 + 29,
-	cinderacemega: 1644 + 30,
-	inteleonmega: 1644 + 31,
-	snorlaxmega: 1644 + 32,
+	pikachuamarillo: 1644 + 2,
+	pikachumega: 1644 + 3,
+	gengarmegax: 1644 + 4,
+	venusaurmegay: 1644 + 5,
+	blastoisemegay: 1644 + 6,
+	gengarmegay: 1644 + 7,
+	kinglermega: 1644 + 8,
+	laprasmega: 1644 + 9,
+	machampmega: 1644 + 10,
+	garbodormega: 1644 + 11,
+	corviknightmega: 1644 + 12,
+	orbeetlemega: 1644 + 13,
+	butterfreemega: 1644 + 14,
+	drednawmega: 1644 + 15,
+	coalossalmega: 1644 + 16,
+	flapplemega: 1644 + 17,
+	appletunmega: 1644 + 18,
+	sandacondamega: 1644 + 19,
+	toxtricitymega: 1644 + 20,
+	toxtricitylowkeymega: 1644 + 21,
+	centiskorchmega: 1644 + 22,
+	hatterenemega: 1644 + 23,
+	grimmsnarlmega: 1644 + 24,
+	alcremiemega: 1644 + 25,
+	copperajahmega: 1644 + 26,
+	duraludonmega: 1644 + 27,
+	eeveestartermega: 1644 + 28,
+	jumpluffmega: 1644 + 29,
+	rillaboommega: 1644 + 30,
+	cinderacemega: 1644 + 31,
+	inteleonmega: 1644 + 32,
+	snorlaxmega: 1644 + 33,
 };
 
 export const BattlePokemonIconIndexesLeft: { [id: string]: number } = {

@@ -784,7 +784,8 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (format.startsWith('ail') && this.dex.gen === 9) {
 			this.formatType = 'natdexanil';
 			this.dex = Dex.mod('gen9anil' as ID);
-			format = (format.slice(3) || 'ou') as ID;
+			format = (format.slice(3) || 'singles') as ID;
+			if (format === 'randomsingles') format = 'purehackmons' as ID;
 		}
 		if (format === 'partnersincrime') this.formatType = 'doubles';
 		if (format.startsWith('ffa') || format === 'freeforall') this.formatType = 'doubles';
@@ -1206,7 +1207,16 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		}
 		let tierSet: SearchRow[] = table.tierSet;
 		let slices: { [k: string]: number } = table.formatSlices;
-		if (
+		if (this.formatType === 'natdexanil') {
+			// megas and primals are reached in battle by holding their item
+			if (!isHackmons) {
+				tierSet = tierSet.filter(([type, id]) => {
+					if (type !== 'pokemon') return true;
+					const species = this.dex.species.get(id);
+					return !species.isMega && !species.isPrimal;
+				});
+			}
+		} else if (
 			format === 'ubers' || format === 'uber' || format === 'ubersuu' ||
 			format === '4v4doublesuu' || format === 'nationaldexdoubles'
 		) {
