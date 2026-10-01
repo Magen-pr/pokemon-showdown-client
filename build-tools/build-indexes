@@ -159,9 +159,16 @@ function requireNoCache(pathSpec) {
 		for (const [table, type] of Object.entries(searchTables)) {
 			for (const id in text[table]) {
 				if (!(id in Dex.data[table])) continue;
-				const name = text[table][id].name;
-				if (!name || name === Dex.data[table][id].name) continue;
-				for (const variant of new Set([stripAccents(name), name])) {
+				const names = new Set([text[table][id].name]);
+				for (const value of Object.values(text[table][id])) {
+					if (value && typeof value === 'object' && value.name) names.add(value.name);
+				}
+				names.delete(Dex.data[table][id].name);
+				const variants = new Set();
+				for (const name of names) {
+					if (name) variants.add(stripAccents(name)).add(name);
+				}
+				for (const variant of variants) {
 					const words = variant.split(/ |-/).map(toID).filter(Boolean);
 					for (let i = 0; i < words.length; i++) {
 						const alias = words.slice(i).join('');
