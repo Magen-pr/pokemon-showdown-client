@@ -904,7 +904,9 @@ export const Dex = new class implements ModdedDex {
 	} = { gen: 6 }) {
 		const mechanicsGen = options.gen || 6;
 		let isDynamax = !!options.dynamax;
+		let dex: ModdedDex | typeof Dex = Dex;
 		if (pokemon instanceof Pokemon) {
+			dex = pokemon.side.battle.dex;
 			if (pokemon.volatiles.transform) {
 				options.shiny = pokemon.volatiles.transform[2];
 				options.gender = pokemon.volatiles.transform[3];
@@ -922,7 +924,7 @@ export const Dex = new class implements ModdedDex {
 			}
 			pokemon = pokemon.getSpeciesForme() + (isGigantamax ? '-Gmax' : '');
 		}
-		const species = Dex.species.get(pokemon);
+		const species = typeof pokemon === 'string' ? dex.species.get(pokemon) : pokemon;
 		// Gmax sprites are already extremely large, so we don't need to double.
 		if (species.name.endsWith('-Gmax')) isDynamax = false;
 		let spriteData = {
@@ -1146,7 +1148,7 @@ export const Dex = new class implements ModdedDex {
 	getTeambuilderSpriteData(pokemon: any, dex: ModdedDex = Dex): TeambuilderSpriteData {
 		let gen = dex.gen;
 		let id = toID(pokemon.species || pokemon);
-		let species = Dex.species.get(id);
+		let species = dex.species.get(id);
 		let spriteid: string;
 		if (typeof pokemon === 'string') {
 			spriteid = species.spriteid || id;
