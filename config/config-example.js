@@ -30,6 +30,9 @@ Config.defaultserver = {
 // language used until the user picks one; leave unset to use the browser's
 Config.defaultLanguage = 'es';
 
+// the server accepts any name without a login server (noguestsecurity)
+Config.noLoginServer = true;
+
 Config.roomsFirstOpenScript = function () {
 };
 

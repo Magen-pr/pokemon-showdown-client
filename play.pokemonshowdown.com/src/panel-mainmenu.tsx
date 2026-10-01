@@ -119,6 +119,11 @@ export class MainMenuRoom extends PSRoom {
 		case 'challstr': {
 			const [, challstr] = args;
 			PS.user.challstr = challstr;
+			if (Config.noLoginServer) {
+				PS.user.initializing = false;
+				PS.update();
+				return true;
+			}
 			PSLoginServer.query(
 				'upkeep', { challstr }
 			).then(res => {

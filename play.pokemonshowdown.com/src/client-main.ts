@@ -57,6 +57,7 @@ export interface PSConfig {
 	customcolors: Record<string, string>;
 	translationCachebuster?: string;
 	defaultLanguage?: string;
+	noLoginServer?: boolean;
 	whitelist?: string[];
 	testclient?: boolean;
 }
@@ -713,7 +714,7 @@ class PSUser extends PSStreamModel<PSLoginState | null> {
 			return;
 		}
 
-		if (userid === this.userid) {
+		if (userid === this.userid || Config.noLoginServer) {
 			PS.send(`/trn ${name}`);
 			this.update({ success: true });
 			return;
