@@ -141,6 +141,16 @@ export class DexSearch {
 		return true;
 	}
 
+	existsInDex(type: string, id: ID) {
+		switch (type) {
+		case 'pokemon': return this.dex.species.get(id).exists;
+		case 'move': return this.dex.moves.get(id).exists;
+		case 'item': return this.dex.items.get(id).exists;
+		case 'ability': return this.dex.abilities.get(id).exists;
+		}
+		return true;
+	}
+
 	getFirstResultIndex() {
 		if (!this.results) return 0;
 		for (let i = 0; i < this.results.length; i++) {
@@ -501,6 +511,8 @@ export class DexSearch {
 
 			// some aliases are substrings
 			if (queryAlias === id && query !== id) continue;
+			// the index also has things that only exist in a mod
+			if (!this.existsInDex(type, id)) continue;
 
 			if (searchType && searchTypeIndex !== typeIndex) {
 				// This is a filter, set it as an instafilter candidate

@@ -92,10 +92,10 @@ function requireNoCache(pathSpec) {
 
 	const compoundTable = new Map(CompoundWordNames.map(word => [toID(word), word]));
 	// generate aliases
-	function generateAlias(id, name, type) {
+	function generateAlias(id, name, type, dex = Dex) {
 		name = compoundTable.get(id) || name;
 		if (type === 'pokemon' && !compoundTable.has(id)) {
-			const species = Dex.species.get(id);
+			const species = dex.species.get(id);
 			const baseid = toID(species.baseSpecies);
 			if (baseid !== id) {
 				name = (compoundTable.get(baseid) || species.baseSpecies) + ' ' + species.forme;
@@ -181,6 +181,30 @@ function requireNoCache(pathSpec) {
 	}
 	index.push(...translatedIndex);
 
+	// things that only exist in a mod, so they can be searched in its formats
+	const modOnlyNames = {};
+	for (const mod of ['gen9anil']) {
+		const modDex = Dex.mod(mod);
+		const getters = { Pokedex: modDex.species, Moves: modDex.moves, Items: modDex.items, Abilities: modDex.abilities };
+		for (const [table, type] of Object.entries(searchTables)) {
+			for (const id in modDex.data[table]) {
+				if (id in Dex.data[table] || modOnlyNames[`${type}:${id}`]) continue;
+				const entry = getters[table].get(id);
+				if (!entry.exists || entry.id !== id || entry.isCosmeticForme) continue;
+				modOnlyNames[`${type}:${id}`] = entry.name;
+				index.push(`${id} ${type}`);
+				generateAlias(id, entry.name, type, modDex);
+				const plain = stripAccents(entry.name);
+				if (plain === entry.name) continue;
+				const words = plain.split(/ |-/).map(toID).filter(Boolean);
+				for (let i = 0; i < words.length; i++) {
+					const alias = words.slice(i).join('');
+					if (alias !== id) index.push(`${alias} ${type} ${id} 0`);
+				}
+			}
+		}
+	}
+
 	// hardcode ultra beasts
 	const ultraBeasts = {
 		ub01symbiont: "nihilego",
@@ -242,6 +266,7 @@ function requireNoCache(pathSpec) {
 		case 'ability': name = Dex.abilities.get(id).name; break;
 		case 'article': name = BattleArticleTitles[id] || ''; break;
 		}
+		name = modOnlyNames[`${entry[1]}:${id}`] || name;
 		let res = '';
 		let nonAlnum = 0;
 		for (let i = 0, j = 0; i < id.length; i++, j++) {
