@@ -149,6 +149,31 @@ function requireNoCache(pathSpec) {
 		generateAlias(id, name, 'ability');
 	}
 
+	// translated names, so the teambuilder can be searched in these languages
+	const searchLanguages = ['es'];
+	const searchTables = { Pokedex: 'pokemon', Moves: 'move', Items: 'item', Abilities: 'ability' };
+	const stripAccents = name => name.normalize('NFD').replace(/[̀-ͯ]/g, '');
+	const translatedIndex = new Set();
+	for (const lang of searchLanguages) {
+		const text = Dex.loadTextData(lang);
+		for (const [table, type] of Object.entries(searchTables)) {
+			for (const id in text[table]) {
+				if (!(id in Dex.data[table])) continue;
+				const name = text[table][id].name;
+				if (!name || name === Dex.data[table][id].name) continue;
+				for (const variant of new Set([stripAccents(name), name])) {
+					const words = variant.split(/ |-/).map(toID).filter(Boolean);
+					for (let i = 0; i < words.length; i++) {
+						const alias = words.slice(i).join('');
+						if (alias === id) continue;
+						translatedIndex.add(`${alias} ${type} ${id} 0`);
+					}
+				}
+			}
+		}
+	}
+	index.push(...translatedIndex);
+
 	// hardcode ultra beasts
 	const ultraBeasts = {
 		ub01symbiont: "nihilego",
