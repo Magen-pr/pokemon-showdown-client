@@ -3545,6 +3545,9 @@ export class Battle {
 			if (this.format.isChampions) {
 				this.dex = Dex.mod('champions' as ID);
 			}
+			if (this.format.mod === 'gen9anil') {
+				this.dex = Dex.mod('gen9anil' as ID);
+			}
 			this.log(args);
 			break;
 		}

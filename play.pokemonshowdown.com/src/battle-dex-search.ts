@@ -781,6 +781,11 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			this.dex = Dex.mod('gen3frlg' as ID);
 			format = format.slice(4) as ID;
 		}
+		if (format.startsWith('ail') && this.dex.gen === 9) {
+			this.formatType = 'natdex';
+			this.dex = Dex.mod('gen9anil' as ID);
+			format = (format.slice(3) || 'ou') as ID;
+		}
 		if (format === 'partnersincrime') this.formatType = 'doubles';
 		if (format.startsWith('ffa') || format === 'freeforall') this.formatType = 'doubles';
 		if (format.includes('letsgo')) {
