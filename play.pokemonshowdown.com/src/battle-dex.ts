@@ -591,7 +591,7 @@ export const Dex = new class implements ModdedDex {
 			if (lang) lang = TEXT_LANGUAGE_TABLE[lang]?.code;
 
 			// oldclient doesn't autodetect language
-			lang ||= window.PS ? this.getBrowserLanguage() : 'en';
+			lang ||= window.PS ? window.Config?.defaultLanguage || this.getBrowserLanguage() : 'en';
 			if (Dex.afdMode === true && lang === 'en') return 'en-afd';
 			return lang;
 		},

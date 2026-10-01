@@ -27,6 +27,9 @@ Config.defaultserver = {
 	registered: true
 };
 
+// language used until the user picks one; leave unset to use the browser's
+Config.defaultLanguage = 'es';
+
 Config.roomsFirstOpenScript = function () {
 };
 
