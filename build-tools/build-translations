@@ -52,6 +52,17 @@ function addModText(Dex, text) {
 	return text;
 }
 
+// entries for things that only exist in a client mod have no English base, so loadTextData skips them
+function addModOnlyText(Dex, lang, text) {
+	for (const [table, file] of [['Moves', 'moves'], ['Abilities', 'abilities'], ['Items', 'items']]) {
+		const raw = Dex.loadTextFile(`${lang}/${file}`, `${table}Text`, true);
+		for (const id in raw) {
+			if (!text[table][id] && raw[id]?.name) text[table][id] = raw[id];
+		}
+	}
+	return text;
+}
+
 function buildTextFiles(Dex, selectedLanguages = null, options = {}) {
 	const uiCalls = updateTranslationFiles(options);
 	const languages = selectedLanguages || getLanguages();
@@ -59,6 +70,7 @@ function buildTextFiles(Dex, selectedLanguages = null, options = {}) {
 	for (const lang of languages) {
 		let battleTranslations = Dex.loadTextData(lang);
 		if (lang === 'en') battleTranslations = addModText(Dex, JSON.parse(JSON.stringify(battleTranslations)));
+		else battleTranslations = addModOnlyText(Dex, lang, JSON.parse(JSON.stringify(battleTranslations)));
 		const uiText = compileBattleUIText(loadTranslations(lang), uiCalls);
 		let output = 'exports.BattleText = exports.BattleText || {};\n' +
 			`exports.BattleText[${JSON.stringify(lang)}] = ${es3stringify(battleTranslations)};`;

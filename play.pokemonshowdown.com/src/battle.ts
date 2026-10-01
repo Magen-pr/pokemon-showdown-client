@@ -3548,6 +3548,7 @@ export class Battle {
 			if (this.format.mod === 'gen9anil') {
 				this.dex = Dex.mod('gen9anil' as ID);
 			}
+			if (this.scene.log.battleParser) this.scene.log.battleParser.mod = this.dex.modid;
 			this.log(args);
 			break;
 		}

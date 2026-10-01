@@ -30,6 +30,7 @@ export class BattleTextParser {
 	perspective: SideID;
 	language: string;
 	gen = 9;
+	mod = '';
 	turn = 0;
 	curLineSection: 'break' | 'preMajor' | 'major' | 'postMajor' = 'break';
 	lowercaseRegExp: RegExp | null | undefined = undefined;
@@ -326,6 +327,8 @@ export class BattleTextParser {
 			if (modifiers.includes('classified') && entry?.classified && typeof entry.classified === 'object') {
 				form = entry.classified;
 			}
+			const modForm = this.mod ? entry?.[this.mod] : null;
+			if (modForm && typeof modForm === 'object') form = { ...form, ...modForm };
 			value = typeof form?.name === 'string' ? form.name : value;
 			category = typeof form?.grammar === 'string' ? form.grammar : category;
 			articleRule = typeof form?.articleRule === 'string' ? form.articleRule : '';
@@ -650,10 +653,15 @@ export class BattleTextParser {
 		if (!name) return '';
 		name = name.trim();
 		const id = toID(name);
-		const localized = BattleText[this.language]?.[table]?.[id]?.name;
-		const english = BattleText.en?.[table]?.[id]?.name;
+		const localized = this.modText(BattleText[this.language]?.[table]?.[id]);
+		const english = this.modText(BattleText.en?.[table]?.[id]);
 		const translated = localized || english;
 		return typeof translated === 'string' ? translated : name;
+	}
+
+	private modText(entry?: BattleTextEntry) {
+		const modEntry = this.mod ? entry?.[this.mod] : null;
+		return (typeof modEntry === 'object' && modEntry?.name) || entry?.name;
 	}
 
 	moveName(name?: string) {

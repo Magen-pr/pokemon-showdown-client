@@ -716,7 +716,7 @@ class BattlePanel extends PSRoomPanel<BattleRoom> {
 			aria-disabled={props.moveData.disabled}
 		>
 			{props.name}<br />
-			<small class="type">{props.type} <span class="effectiveness-icon">{props.tags}</span></small> {}
+			<small class="type">{TL.type[props.type] || props.type} <span class="effectiveness-icon">{props.tags}</span></small> {}
 			<small class="pp">{pp}</small>&nbsp;
 		</button>;
 	}
