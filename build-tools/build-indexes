@@ -740,6 +740,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			if (item.gen > genNum) {
 				continue;
 			}
+			if (isAnil && item.isNonstandard === 'Custom') continue;
 			if (item.isNonstandard && !isMetBattle) {
 				if (isNatDex || isNDChampions || isAnil) {
 					let curItem = item;

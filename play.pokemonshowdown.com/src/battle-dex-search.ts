@@ -142,13 +142,16 @@ export class DexSearch {
 	}
 
 	existsInDex(type: string, id: ID) {
+		let thing;
 		switch (type) {
-		case 'pokemon': return this.dex.species.get(id).exists;
-		case 'move': return this.dex.moves.get(id).exists;
-		case 'item': return this.dex.items.get(id).exists;
-		case 'ability': return this.dex.abilities.get(id).exists;
+		case 'pokemon': thing = this.dex.species.get(id); break;
+		case 'move': thing = this.dex.moves.get(id); break;
+		case 'item': thing = this.dex.items.get(id); break;
+		case 'ability': thing = this.dex.abilities.get(id); break;
+		default: return true;
 		}
-		return true;
+		// in gen9anil everything in the game is standard, the rest is marked Custom
+		return thing.exists && !(this.dex.modid === 'gen9anil' && thing.isNonstandard);
 	}
 
 	getFirstResultIndex() {
@@ -1071,6 +1074,15 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		return true;
 	}
 	abstract getTable(): { [id: string]: any };
+	/** ids of a table, plus the ones that only exist in the current mod */
+	tableIds(table: { [id: string]: any }, overrides: 'overrideMoveData' | 'overrideAbilityData') {
+		const ids = Object.keys(table);
+		if (this.dex.modid === `gen${this.dex.gen}`) return ids;
+		for (const id in window.BattleTeambuilderTable[this.dex.modid]?.[overrides] || {}) {
+			if (!(id in table)) ids.push(id);
+		}
+		return ids;
+	}
 	abstract getDefaultResults(): SearchRow[];
 	abstract getBaseResults(): SearchRow[];
 	abstract filter(input: SearchRow, filters: string[][]): boolean;
@@ -1463,7 +1475,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		}
 		if (isAAA || format.includes('metronomebattle') || isHackmons) {
 			let abilities: ID[] = [];
-			for (let i in this.getTable()) {
+			for (const i of this.tableIds(this.getTable(), 'overrideAbilityData')) {
 				const ability = dex.abilities.get(i);
 				if (ability.isNonstandard) continue;
 				if (ability.gen > dex.gen) continue;
@@ -1988,7 +2000,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		}
 		if (sketch || isHackmons) {
 			if (isHackmons) moves = [];
-			for (let id in BattleMovedex) {
+			for (const id of this.tableIds(BattleMovedex, 'overrideMoveData')) {
 				if (!format.startsWith('cap') && (id === 'paleowave' || id === 'shadowstrike')) continue;
 				const move = dex.moves.get(id);
 				if (move.gen > dex.gen || !move.exists) continue;
@@ -2003,6 +2015,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					if (move.isMax && dex.gen > 8) continue;
 					if (move.isNonstandard === 'Past' && this.formatType !== 'natdex') continue;
 					if (move.isNonstandard === 'LGPE' && this.formatType !== 'letsgo') continue;
+					if (move.isNonstandard === 'Custom' && this.formatType === 'natdexanil') continue;
 					moves.push(move.id);
 				}
 			}
