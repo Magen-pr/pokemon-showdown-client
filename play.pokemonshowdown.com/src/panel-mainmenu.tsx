@@ -1024,18 +1024,28 @@ export class TeamForm extends preact.Component<{
 	render() {
 		if (window.BattleFormats) {
 			this.format ||= this.props.defaultFormat || '';
-			if (!this.format) {
-				this.format = `gen${Dex.gen}randombattle`;
+			const randomBattle = `gen${Dex.gen}randombattle`;
+			// the format list may not have arrived yet the first time around
+			const notOffered = this.format === randomBattle && Object.keys(window.BattleFormats).length &&
+				!window.BattleFormats[randomBattle];
+			if (!this.format || notOffered) {
+				const usable = (id: string) => {
+					const format = window.BattleFormats[id];
+					if (!format) return false;
+					if (this.props.selectType === 'challenge' && format.challengeShow === false) return false;
+					if (this.props.selectType === 'search' && format.searchShow === false) return false;
+					if (this.props.selectType === 'teambuilder' && format.team) return false;
+					return true;
+				};
+				this.format = randomBattle;
+				// servers without Random Battle: first format they offer
+				if (!window.BattleFormats[randomBattle]) this.format = Object.keys(window.BattleFormats).find(usable) || randomBattle;
 
 				const starredPrefs = PS.prefs.starredformats || {};
 				// .reverse() because the newest starred format should be the default one
 				const starred = Object.keys(starredPrefs).filter(id => starredPrefs[id] === true).reverse();
 				for (let id of starred) {
-					let format = window.BattleFormats[id];
-					if (!format) continue;
-					if (this.props.selectType === 'challenge' && format?.challengeShow === false) continue;
-					if (this.props.selectType === 'search' && format?.searchShow === false) continue;
-					if (this.props.selectType === 'teambuilder' && format?.team) continue;
+					if (!usable(id)) continue;
 					this.format = id;
 					break;
 				}
