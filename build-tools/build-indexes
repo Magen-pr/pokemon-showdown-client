@@ -154,6 +154,20 @@ function requireNoCache(pathSpec) {
 	const searchTables = { Pokedex: 'pokemon', Moves: 'move', Items: 'item', Abilities: 'ability' };
 	const stripAccents = name => name.normalize('NFD').replace(/[̀-ͯ]/g, '');
 	const translatedIndex = new Set();
+	const addTranslated = (type, id, names) => {
+		const variants = new Set();
+		for (const name of names) {
+			if (name) variants.add(stripAccents(name)).add(name);
+		}
+		for (const variant of variants) {
+			const words = variant.split(/ |-/).map(toID).filter(Boolean);
+			for (let i = 0; i < words.length; i++) {
+				const alias = words.slice(i).join('');
+				if (alias === id) continue;
+				translatedIndex.add(`${alias} ${type} ${id} 0`);
+			}
+		}
+	};
 	for (const lang of searchLanguages) {
 		const text = Dex.loadTextData(lang);
 		for (const [table, type] of Object.entries(searchTables)) {
@@ -164,19 +178,17 @@ function requireNoCache(pathSpec) {
 					if (value && typeof value === 'object' && value.name) names.add(value.name);
 				}
 				names.delete(Dex.data[table][id].name);
-				const variants = new Set();
-				for (const name of names) {
-					if (name) variants.add(stripAccents(name)).add(name);
-				}
-				for (const variant of variants) {
-					const words = variant.split(/ |-/).map(toID).filter(Boolean);
-					for (let i = 0; i < words.length; i++) {
-						const alias = words.slice(i).join('');
-						if (alias === id) continue;
-						translatedIndex.add(`${alias} ${type} ${id} 0`);
-					}
-				}
+				addTranslated(type, id, names);
 			}
+		}
+		for (const [name, translated] of Object.entries(text.TypeNames)) {
+			if (toID(name) in Dex.data.TypeChart) addTranslated('type', toID(name), [translated]);
+		}
+		for (const [name, translated] of Object.entries(text.EggGroupNames)) {
+			addTranslated('egggroup', toID(name), [translated]);
+		}
+		for (const id of ['physical', 'special', 'status']) {
+			addTranslated('category', id, [text.Tags[id]?.name]);
 		}
 	}
 	index.push(...translatedIndex);
