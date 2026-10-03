@@ -776,14 +776,18 @@ class MainMenuPanel extends PSRoomPanel<MainMenuRoom> {
 				</div>
 				<div class="mainmenu-footer">
 					<div class="bgcredit">{this.renderBackgroundCredit()}</div>
-					<small>
+					{Config.footerLinks ? <small>
+						{Config.footerLinks.map(([label, url], i) => [
+							i ? ' | ' : '', url ? <a href={url} target="_blank">{label}</a> : label,
+						])}
+					</small> : <small>
 						<a href={`//${Config.routes.dex}/`} target="_blank">{TL`Pokédex`}</a> | {}
 						<a href={`//${Config.routes.replays}/`} target="_blank">{TL`Replays`}</a> | {}
 						<a href="//smogon.com/forums/" target="_blank">{TL`Forum`}</a> | {}
 						<a href={`//${Config.routes.root}/rules`} target="_blank">{TL`Rules`}</a> | {}
 						<a href={`//${Config.routes.root}/credits`} target="_blank">{TL`Credits`}</a> | {}
 						<a href={`//${Config.routes.root}/privacy`} target="_blank">{TL`Privacy`}</a>
-					</small>
+					</small>}
 					<CCPAIntercept />
 				</div>
 			</div>

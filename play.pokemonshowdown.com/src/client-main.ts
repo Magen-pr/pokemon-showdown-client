@@ -58,6 +58,8 @@ export interface PSConfig {
 	translationCachebuster?: string;
 	defaultLanguage?: string;
 	noLoginServer?: boolean;
+	/** replaces the main menu footer links: [label, url]; an empty url shows plain text */
+	footerLinks?: [string, string][];
 	whitelist?: string[];
 	testclient?: boolean;
 }
