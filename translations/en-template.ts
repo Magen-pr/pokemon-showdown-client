@@ -414,6 +414,7 @@ export const translations: TranslationCatalog = {
 	"Active Pokémon": null,
 	"Your team": null,
 	"Opponent's team": null,
+	"{NAME}'s team:": null,
 	"Statused": null,
 	"Non-statused": null,
 	"Unrevealed Illusion user": null,

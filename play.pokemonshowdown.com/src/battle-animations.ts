@@ -916,7 +916,7 @@ export class BattleScene implements BattleSceneStub {
 			side.totalPokemon = side.pokemon.length;
 			if (textBuf) {
 				this.log.addDiv('chat battle-history',
-					`<strong>${BattleLog.escapeHTML(side.name)}'s team:</strong> <em style="color:#445566;display:block;">${BattleLog.escapeHTML(textBuf)}</em>`
+					`<strong>${BattleLog.escapeHTML(TL`${side.name}'s team:`)}</strong> <em style="color:#445566;display:block;">${BattleLog.escapeHTML(textBuf)}</em>`
 				);
 			}
 			this.$sprites[spriteIndex].html(buf + buf2);

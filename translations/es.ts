@@ -414,6 +414,7 @@ export const translations: TranslationCatalog = {
 	"Active Pokémon": "Pokémon activo",
 	"Your team": "Tu equipo",
 	"Opponent's team": "Equipo del oponente",
+	"{NAME}'s team:": "Equipo de {NAME}:",
 	"Statused": "Con problema de estado",
 	"Non-statused": "Sin problema de estado",
 	"Unrevealed Illusion user": "Usuario de Ilusión sin revelar",
