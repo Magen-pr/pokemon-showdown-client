@@ -60,6 +60,8 @@ export interface PSConfig {
 	noLoginServer?: boolean;
 	/** replaces the main menu footer links: [label, url]; an empty url shows plain text */
 	footerLinks?: [string, string][];
+	/** format for new teams in the teambuilder, instead of the plain current gen */
+	defaultTeamFormat?: string;
 	whitelist?: string[];
 	testclient?: boolean;
 }

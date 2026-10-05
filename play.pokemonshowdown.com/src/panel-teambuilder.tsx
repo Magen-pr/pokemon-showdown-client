@@ -5,7 +5,7 @@
  * @license AGPLv3
  */
 
-import { PS, PSRoom, type RoomID, type Team } from "./client-main";
+import { Config, PS, PSRoom, type RoomID, type Team } from "./client-main";
 import { PSPanelWrapper, PSRoomPanel } from "./panels";
 import { PSTeambuilder, TeamBox } from "./panel-teamdropdown";
 import { Dex, PSUtils, TL, toID, type ID } from "./battle-dex";
@@ -17,7 +17,7 @@ const ADD_FORMAT_FOLDER_VALUE = '+';
 const ADD_FOLDER_VALUE = '++';
 
 class TeambuilderRoom extends PSRoom {
-	readonly DEFAULT_FORMAT = Dex.modid;
+	readonly DEFAULT_FORMAT = (Config.defaultTeamFormat || Dex.modid) as ID;
 
 	/**
 	 * - `""` - all
