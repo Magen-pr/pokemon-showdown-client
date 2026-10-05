@@ -298,6 +298,10 @@ replaysContents = replaysContents.replace('<?php', "<?php\n\nchdir(dirname(__DIR
 replaysContents = cachebust(replaysContents, 'replay.pokemonshowdown.com');
 fs.mkdirSync('replay.pokemonshowdown.com/caches', { recursive: true });
 fs.writeFileSync('replay.pokemonshowdown.com/caches/index.php', replaysContents);
+// static version for servers without PHP; it gets everything from the replays API
+let replaysStaticContents = fs.readFileSync('replay.pokemonshowdown.com/index.html', UTF8);
+replaysStaticContents = cachebust(replaysStaticContents, 'replay.pokemonshowdown.com');
+fs.writeFileSync('replay.pokemonshowdown.com/caches/index.html', replaysStaticContents);
 
 let teamsContents = fs.readFileSync('teams.pokemonshowdown.com/index.html', UTF8);
 teamsContents = cachebust(teamsContents, 'teams.pokemonshowdown.com');
