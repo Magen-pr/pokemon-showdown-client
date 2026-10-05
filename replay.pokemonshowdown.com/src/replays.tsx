@@ -3,7 +3,7 @@ import preact from '../../play.pokemonshowdown.com/js/lib/preact';
 import { Net, PSModel } from './utils';
 import { BattlePanel } from './replays-battle';
 import { SearchPanel } from './replays-index';
-import type { ID } from '../../play.pokemonshowdown.com/src/battle-dex';
+import { Dex, type ID } from '../../play.pokemonshowdown.com/src/battle-dex';
 declare const Config: any;
 
 export const PSRouter = new class extends PSModel {
@@ -144,6 +144,10 @@ export class PSReplays extends preact.Component {
 		</div>;
 	}
 }
+
+// there's no language setting here, so use the client's default (or the browser's) for the battle log
+const replaysLanguage: string = Config.defaultLanguage || Dex.text.getBrowserLanguage();
+Dex.text.getLanguage = () => replaysLanguage;
 
 preact.render(<PSReplays />, document.getElementById('main')!);
 

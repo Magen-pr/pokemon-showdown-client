@@ -209,16 +209,16 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 		case 191: // / (?)
 			if (e.shiftKey) {
 				alert(
-					'k = play/pause\n' +
-					'j = previous turn\n' +
-					'l = next turn\n' +
-					'J = first turn\n' +
-					'L = last turn\n' +
-					'm = mute\n' +
-					'< = slower\n' +
-					'> = faster\n' +
-					'1-9 = skip to turn\n' +
-					'? = keyboard shortcuts (this)\n'
+					'k = reproducir/pausa\n' +
+					'j = turno anterior\n' +
+					'l = turno siguiente\n' +
+					'J = primer turno\n' +
+					'L = último turno\n' +
+					'm = silenciar\n' +
+					'< = más lento\n' +
+					'> = más rápido\n' +
+					'1-9 = ir a un turno\n' +
+					'? = atajos de teclado (esto)\n'
 				);
 			}
 			break;
@@ -265,7 +265,7 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 		if (!turn?.trim()) return this.closeTurn(e);
 		let turnNum = Number(turn);
 		if (turn === 'e' || turn === 'end' || turn === 'f' || turn === 'finish') turnNum = Infinity;
-		if (isNaN(turnNum) || turnNum < 0) alert("Invalid turn");
+		if (isNaN(turnNum) || turnNum < 0) alert("Turno no válido");
 		this.battle?.seekTurn(turnNum);
 		this.closeTurn(e);
 	};
@@ -280,7 +280,7 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 	clickDownload = (e: MouseEvent) => {
 		if (!this.battle) {
 			// should never happen
-			alert("Wait for the battle to finish loading before downloading.");
+			alert("Espera a que cargue el combate antes de descargarlo.");
 			return;
 		}
 		let filename = (this.battle.tier || 'Battle').replace(/[^A-Za-z0-9]/g, '');
@@ -406,7 +406,7 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 	changePrivacy = (e: Event) => {
 		const privateValue = Number((e.target as HTMLSelectElement).value);
 		if (!this.result || this.privacySaving !== null) return;
-		if (privateValue === 3 && !confirm("Delete this replay?")) return;
+		if (privateValue === 3 && !confirm("¿Borrar esta repetición?")) return;
 
 		const replay = this.result;
 		this.privacySaving = privateValue;
@@ -439,29 +439,29 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 	renderManagement() {
 		if (!this.manageOpen) return null;
 		if (!this.props.user?.isLeader) {
-			return <p class="section message-error">You do not have permission to manage this replay.</p>;
+			return <p class="section message-error">No tienes permiso para gestionar esta repetición.</p>;
 		}
 		const privacy = this.currentPrivacy();
 		return <section class="section" style={{ clear: 'right', marginTop: '12px', marginRight: '0', maxWidth: '500px' }}>
 			<button type="button" class="button" style="float:right" onClick={this.toggleManage}>
-				<i class="fa fa-times"></i> Close
+				<i class="fa fa-times"></i> Cerrar
 			</button>
-			<h2 style="margin-top:0">Manage replay</h2>
+			<h2 style="margin-top:0">Gestionar repetición</h2>
 			<p>
-				Privacy: {}
+				Privacidad: {}
 				<button class="button button-first" disabled={privacy === 0} value={0} onClick={this.changePrivacy}>
-					Public
+					Pública
 				</button>
 				<button class="button button-middle" disabled={privacy === 1} value={1} onClick={this.changePrivacy}>
-					Private
+					Privada
 				</button>
 				<button class="button button-middle" disabled={privacy === 2} value={2} onClick={this.changePrivacy}>
-					Private (no password)
+					Privada (sin contraseña)
 				</button>
 				<button class="button button-last" disabled={privacy === 3} value={3} onClick={this.changePrivacy}>
-					Deleted
+					Borrada
 				</button> {}
-				{this.privacySaving !== null && <em class="button cur">Saving...</em>}
+				{this.privacySaving !== null && <em class="button cur">Guardando...</em>}
 			</p>
 			{this.manageError && <p class="message-error">{this.manageError}</p>}
 			<p>
@@ -502,12 +502,12 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 					<img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-d.gif" alt="" style={{ imageRendering: 'pixelated' }} />
 				</div>
 			</section><section class="section">
-				<h1>Not Found</h1>
+				<h1>No encontrada</h1>
 				<p>
-					The battle you're looking for has expired. Battles expire after 15 minutes of inactivity unless they're saved.
+					El combate que buscas ha caducado. Los combates caducan tras 15 minutos de inactividad si no se guardan.
 				</p>
 				<p>
-					In the future, remember to click <strong>Upload and share replay</strong> to save a replay permanently.
+					La próxima vez, pulsa <strong>Subir y compartir la repetición</strong> para guardarla para siempre.
 				</p>
 			</section>
 		</div>;
@@ -521,14 +521,14 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 			this.turnView = true;
 			return <div class="replay-controls"><section class="section">
 				<form onSubmit={this.goToTurn}>
-					Turn? <input name="turn" autofocus value={value} inputMode="numeric" class="textbox" size={5} /> {}
-					<button type="submit" class="button"><strong>Go</strong></button> {}
-					<button type="button" class="button" onClick={this.closeTurn}>Cancel</button>
+					¿Turno? <input name="turn" autofocus value={value} inputMode="numeric" class="textbox" size={5} /> {}
+					<button type="submit" class="button"><strong>Ir</strong></button> {}
+					<button type="button" class="button" onClick={this.closeTurn}>Cancelar</button>
 				</form>
 				<p>
-					<em>Pro tip:</em> You don't need to click "Skip to turn" if you have a keyboard, just start typing
-					the turn number and press <kbd>Enter</kbd>. For more shortcuts, press <kbd>Shift</kbd>+<kbd>/</kbd> {}
-					when a text box isn't focused.
+					<em>Consejo:</em> con teclado no hace falta pulsar «Ir al turno»: escribe el número del turno
+					y pulsa <kbd>Enter</kbd>. Para ver más atajos, pulsa <kbd>Shift</kbd>+<kbd>/</kbd> {}
+					fuera de una caja de texto.
 				</p>
 			</section></div>;
 		}
@@ -537,75 +537,75 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 			<p>
 				{atEnd && this.battle ? (
 					<button onClick={this.replay} class="button" style={{ width: '5em', marginRight: '3px' }}>
-						<i class="fa fa-undo" aria-hidden></i><br />Replay
+						<i class="fa fa-undo" aria-hidden></i><br />Repetir
 					</button>
 				) : !this.battle || this.battle.paused ? (
 					<button onClick={this.play} class="button" disabled={!this.battle} style={{ width: '5em', marginRight: '3px' }}>
-						<i class="fa fa-play" aria-hidden></i><br /><strong>Play</strong>
+						<i class="fa fa-play" aria-hidden></i><br /><strong>Reproducir</strong>
 					</button>
 				) : (
 					<button onClick={this.pause} class="button" style={{ width: '5em', marginRight: '3px' }}>
-						<i class="fa fa-pause" aria-hidden></i><br /><strong>Pause</strong>
+						<i class="fa fa-pause" aria-hidden></i><br /><strong>Pausa</strong>
 					</button>
 				)} {}
 				<button class="button button-first" disabled={atStart} onClick={this.firstTurn}>
-					<i class="fa fa-fast-backward" aria-hidden></i><br />First turn
+					<i class="fa fa-fast-backward" aria-hidden></i><br />Primer turno
 				</button>
 				<button
 					class="button button-first" disabled={atStart} style={{ marginLeft: '1px', position: 'relative', zIndex: '1' }}
 					onClick={this.prevTurn}
 				>
-					<i class="fa fa-step-backward" aria-hidden></i><br />Prev turn
+					<i class="fa fa-step-backward" aria-hidden></i><br />Turno anterior
 				</button>
 				<button class="button button-last" disabled={atEnd} style={{ marginRight: '2px' }} onClick={this.nextTurn}>
-					<i class="fa fa-step-forward" aria-hidden></i><br />Skip turn
+					<i class="fa fa-step-forward" aria-hidden></i><br />Turno siguiente
 				</button>
 				<button class="button button-last" disabled={atEnd} onClick={this.lastTurn}>
-					<i class="fa fa-fast-forward" aria-hidden></i><br />Skip to end
+					<i class="fa fa-fast-forward" aria-hidden></i><br />Ir al final
 				</button> {}
 				<button class="button" onClick={this.openTurn}>
-					<i class="fa fa-repeat" aria-hidden></i> Go to turn...
+					<i class="fa fa-repeat" aria-hidden></i> Ir al turno...
 				</button>
 			</p>
 			<p>
 				<label class="optgroup">
-					Speed:<br />
+					Velocidad:<br />
 					<select name="speed" class="button" onChange={this.changeSpeed} value={this.getSpeed()}>
-						<option value="hyperfast">Hyperfast</option>
-						<option value="fast">Fast</option>
+						<option value="hyperfast">Hiperrápida</option>
+						<option value="fast">Rápida</option>
 						<option value="normal">Normal</option>
-						<option value="slow">Slow</option>
-						<option value="reallyslow">Really slow</option>
+						<option value="slow">Lenta</option>
+						<option value="reallyslow">Muy lenta</option>
 					</select>
 				</label> {}
 				<label class="optgroup">
-					Sound:<br />
+					Sonido:<br />
 					<select
 						name="sound" class="button" onChange={this.changeSound}
 						value={BattleSound.muted ? 'off' : BattleSound.bgmVolume ? 'on' : 'musicoff'}
 					>
-						<option value="on">On</option>
-						<option value="musicoff">Music Off</option>
-						<option value="off">Muted</option>
+						<option value="on">Activado</option>
+						<option value="musicoff">Sin música</option>
+						<option value="off">Silenciado</option>
 					</select>
 				</label> {}
 				<label class="optgroup">
-					Dark mode:<br />
+					Modo oscuro:<br />
 					<select name="darkmode" class="button" onChange={this.changeDarkMode} value={PSReplays.darkMode}>
-						<option value="auto">Automatic</option>
-						<option value="dark">Dark</option>
-						<option value="light">Light</option>
+						<option value="auto">Automático</option>
+						<option value="dark">Oscuro</option>
+						<option value="light">Claro</option>
 					</select>
 				</label> {}
 				<label class="optgroup">
-					Viewpoint:<br />
+					Perspectiva:<br />
 					<button onClick={this.switchViewpoint} name="viewpoint" class={this.battle ? 'button' : 'button disabled'}>
-						{(this.battle?.viewpointSwitched ? this.result?.players[1] : this.result?.players[0] || "Player")} {}
-						<i class="fa fa-random" aria-hidden aria-label="Switch viewpoint"></i>
+						{(this.battle?.viewpointSwitched ? this.result?.players[1] : this.result?.players[0] || "Jugador")} {}
+						<i class="fa fa-random" aria-hidden aria-label="Cambiar de perspectiva"></i>
 					</button>
 				</label> {}
 				<label class="optgroup">
-					Volume:<br />
+					Volumen:<br />
 					<input type="range" onInput={this.changeVolume} />
 				</label>
 			</p>
@@ -613,14 +613,14 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 				<strong>{this.result.format}</strong>: {}
 				{!!this.result.private && <i class="fa fa-lock" aria-hidden></i>} {this.result.players.join(' vs. ')}
 			</h1> : <h1>
-				<em>Loading...</em>
+				<em>Cargando...</em>
 			</h1>}
 			{!!this.result?.private && <p>
-				<strong><i class="fa fa-lock" aria-hidden></i> PRIVATE</strong> - make sure you have the owner's permission to share
+				<strong><i class="fa fa-lock" aria-hidden></i> PRIVADA</strong> - asegúrate de tener permiso de su dueño para compartirla
 			</p>}
 			<p>
 				<label>
-					Short URL: <input
+					Enlace: <input
 						name="shareurl" type="text" class="textbox" readOnly size={60}
 						style="max-width:99%;box-sizing:border-box;field-sizing:content;padding-right:20px"
 						value={this.shareURL()} onFocus={this.selectShareURL}
@@ -632,19 +632,21 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 					{this.props.user?.isLeader && <button
 						type="button" class={`button${this.manageOpen ? ' cur' : ''}`} onClick={this.toggleManage}
 					>
-						<i class="fa fa-wrench" aria-hidden></i> Manage
+						<i class="fa fa-wrench" aria-hidden></i> Gestionar
 					</button>} {}
 					<a class="button" href="/download" onClick={this.clickDownload}>
-						<i class="fa fa-download" aria-hidden></i> Download
+						<i class="fa fa-download" aria-hidden></i> Descargar
 					</a>
 				</span>
-				{this.result.uploadtime ? new Date(this.result.uploadtime * 1000).toDateString() : "Unknown upload date"}
-				{this.result.rating ? [` | `, <em>Rating:</em>, ` ${this.result.rating}`] : ''}
+				{this.result.uploadtime ? new Date(this.result.uploadtime * 1000).toLocaleDateString('es', {
+					day: 'numeric', month: 'long', year: 'numeric',
+				}) : "Fecha de subida desconocida"}
+				{this.result.rating ? [` | `, <em>Puntuación:</em>, ` ${this.result.rating}`] : ''}
 				{/* {} <code>{this.keyCode}</code> */}
 			</p> : <p>&nbsp;</p>}
 			{this.renderManagement()}
 			{!PSRouter.showingLeft() && <p>
-				<a href={PSRouter.href(PSRouter.leftLoc)} class="button"><i class="fa fa-caret-left" aria-hidden></i> More replays</a>
+				<a href={PSRouter.href(PSRouter.leftLoc)} class="button"><i class="fa fa-caret-left" aria-hidden></i> Más repeticiones</a>
 			</p>}
 		</div>;
 	}

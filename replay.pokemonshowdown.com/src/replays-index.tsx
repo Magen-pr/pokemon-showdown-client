@@ -28,7 +28,7 @@ function ReplayLink(props: {
 		(viewpointSwitched || props.switched ? '?p2' : '');
 
 	return <a href={PSRouter.href(url)} class="blocklink">
-		<small>{replay.format}{replay.rating ? ` (Rating: ${replay.rating})` : ''}<br /></small>
+		<small>{replay.format}{replay.rating ? ` (Puntuación: ${replay.rating})` : ''}<br /></small>
 		{!!replay.private && <i class="fa fa-lock" aria-hidden></i>} {}
 		<strong>{replay.players[0]}</strong> vs. <strong>{replay.players[1]}</strong>
 		{props.children && <small><br />
@@ -70,14 +70,14 @@ export class SearchPanel extends preact.Component<{ id: string, user: PSReplays[
 
 		if (isPrivate) {
 			if (!response.startsWith(']')) {
-				this.resultError = `Unrecognized response: ${response}`;
+				this.resultError = `Respuesta no reconocida: ${response}`;
 				return;
 			}
 			response = response.slice(1);
 		}
 		const results = JSON.parse(response);
 		if (!Array.isArray(results)) {
-			this.resultError = results.actionerror || `Unrecognized response: ${response}`;
+			this.resultError = results.actionerror || `Respuesta no reconocida: ${response}`;
 			return;
 		}
 		this.results = results;
@@ -191,7 +191,7 @@ export class SearchPanel extends preact.Component<{ id: string, user: PSReplays[
 				<strong class="message-error">{this.resultError}</strong>
 			</li>) ||
 			(!results && <li>
-				<em>Loading...</em>
+				<em>Cargando...</em>
 			</li>) ||
 			(results?.map(result => <li>
 				<ReplayLink replay={result} user={toID(this.user)}></ReplayLink>
@@ -199,56 +199,56 @@ export class SearchPanel extends preact.Component<{ id: string, user: PSReplays[
 		</ul>;
 		return <div class={PSRouter.showingRight() ? 'sidebar' : ''}>
 			<section class="section first-section">
-				<h1>Search replays</h1>
+				<h1>Buscar repeticiones</h1>
 				<form onSubmit={this.submitForm}>
 					<p>
 						<label>
-							Username: <small class="gray">(separate multiple usernames by commas)</small><br />
-							<input type="search" class="textbox" name="user" placeholder="(blank = any user)" size={20} /> {}
+							Usuario: <small class="gray">(separa varios usuarios con comas)</small><br />
+							<input type="search" class="textbox" name="user" placeholder="(vacío = cualquier usuario)" size={20} /> {}
 							{this.props.user &&
 								<button type="button" class="button" onClick={this.searchLoggedIn}>
-									{this.props.user.id}'s replays
+									Repeticiones de {this.props.user.id}
 								</button>}
 						</label>
 					</p>
 					<p>
-						<label>Format:<br />
-							<input type="search" class="textbox" name="format" placeholder="(blank = any format)" size={30} /></label>
+						<label>Formato:<br />
+							<input type="search" class="textbox" name="format" placeholder="(vacío = cualquier formato)" size={30} /></label>
 					</p>
 					<p>
-						<label class="checkbox inline"><input type="radio" name="private" value="" /> Public</label> {}
-						<label class="checkbox inline"><input type="radio" name="private" value="1" /> Private (your own replays only)</label>
+						<label class="checkbox inline"><input type="radio" name="private" value="" /> Públicas</label> {}
+						<label class="checkbox inline"><input type="radio" name="private" value="1" /> Privadas (solo las tuyas)</label>
 					</p>
 					<p>
-						<button type="submit" class="button"><i class="fa fa-search" aria-hidden></i> <strong>Search</strong></button> {}
-						{activelySearching && <button class="button" onClick={this.cancelForm}>Cancel</button>}
+						<button type="submit" class="button"><i class="fa fa-search" aria-hidden></i> <strong>Buscar</strong></button> {}
+						{activelySearching && <button class="button" onClick={this.cancelForm}>Cancelar</button>}
 					</p>
-					{activelySearching && <h1 aria-label="Results"></h1>}
+					{activelySearching && <h1 aria-label="Resultados"></h1>}
 					{activelySearching && this.format && !this.user && <p>
-						Sort by: {}
+						Ordenar por: {}
 						<a href={this.modLink({ sort: 'date' })} class={`button button-first${this.byRating ? '' : ' disabled'}`}>
-							Date
+							Fecha
 						</a>
 						<a href={this.modLink({ sort: 'rating' })} class={`button button-last${this.byRating ? ' disabled' : ''}`}>
-							Rating
+							Puntuación
 						</a>
 					</p>}
 					{activelySearching && this.page > 1 && <p class="pagelink">
 						<a href={this.modLink({ page: -1 })} class="button">
-							<i class="fa fa-caret-up" aria-hidden></i><br />Page {this.page - 1}
+							<i class="fa fa-caret-up" aria-hidden></i><br />Página {this.page - 1}
 						</a>
 					</p>}
 					{activelySearching && searchResults}
 					{activelySearching && (this.results?.length || 0) > 50 && <p class="pagelink">
 						<a href={this.modLink({ page: 1 })} class="button">
-							Page {this.page + 1}<br /><i class="fa fa-caret-down" aria-hidden></i>
+							Página {this.page + 1}<br /><i class="fa fa-caret-down" aria-hidden></i>
 						</a>
 					</p>}
 				</form>
 			</section>
 			{!activelySearching && isMainReplaySite() && <FeaturedReplays />}
 			{!activelySearching && <section class="section">
-				<h1>Recent replays</h1>
+				<h1>Repeticiones recientes</h1>
 				<ul class="linklist">
 					{searchResults}
 				</ul>
