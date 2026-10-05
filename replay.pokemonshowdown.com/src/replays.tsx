@@ -128,6 +128,7 @@ export class PSReplays extends preact.Component {
 		if (!Net.defaultRoute) Net(`/api/replays/check-login`).get().then(result => {
 			if (!result.startsWith(']')) return;
 			const [userid, isLeader] = result.slice(1).split(',');
+			if (!userid || userid === 'guest') return;
 			this.user = { id: userid as ID, isLeader: !!isLeader };
 			this.forceUpdate();
 		});
@@ -149,7 +150,10 @@ export class PSReplays extends preact.Component {
 const replaysLanguage: string = Config.defaultLanguage || Dex.text.getBrowserLanguage();
 Dex.text.getLanguage = () => replaysLanguage;
 
-preact.render(<PSReplays />, document.getElementById('main')!);
+// wait for the texts, or the first lines of the battle log come out in English
+void Dex.loadTextData(replaysLanguage).then(() => {
+	preact.render(<PSReplays />, document.getElementById('main')!);
+});
 
 if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
 	document.documentElement.className = 'dark';
