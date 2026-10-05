@@ -396,6 +396,8 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 	shareURL() {
 		if (!this.result) return '';
 		const fullid = this.result.id + (this.result.password ? `-${this.result.password}pw` : '');
+		// psim.us only shortens links to the main replay site
+		if (!Net.defaultRoute && location.host !== 'replay.pokemonshowdown.com') return `https://${location.host}/${fullid}`;
 		return `https://psim.us/r/${fullid}`;
 	}
 	selectShareURL = (e: Event) => {

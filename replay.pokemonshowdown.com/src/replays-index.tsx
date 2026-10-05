@@ -246,7 +246,7 @@ export class SearchPanel extends preact.Component<{ id: string, user: PSReplays[
 					</p>}
 				</form>
 			</section>
-			{!activelySearching && <FeaturedReplays />}
+			{!activelySearching && isMainReplaySite() && <FeaturedReplays />}
 			{!activelySearching && <section class="section">
 				<h1>Recent replays</h1>
 				<ul class="linklist">
@@ -255,6 +255,11 @@ export class SearchPanel extends preact.Component<{ id: string, user: PSReplays[
 			</section>}
 		</div>;
 	}
+}
+
+/** the featured replays only exist on the main replay site (or the testclient, which reads from it) */
+function isMainReplaySite() {
+	return !!Net.defaultRoute || location.host === 'replay.pokemonshowdown.com';
 }
 
 class FeaturedReplays extends preact.Component {
