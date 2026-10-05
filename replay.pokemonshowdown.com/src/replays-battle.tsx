@@ -610,13 +610,14 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 				</label>
 			</p>
 			{this.result ? <h1>
-				<strong>{this.result.format}</strong>: {}
+				<strong>{BattleLog.formatName(this.result.format)}</strong>: {}
 				{!!this.result.private && <i class="fa fa-lock" aria-hidden></i>} {this.result.players.join(' vs. ')}
 			</h1> : <h1>
 				<em>Cargando...</em>
 			</h1>}
 			{!!this.result?.private && <p>
-				<strong><i class="fa fa-lock" aria-hidden></i> PRIVADA</strong> - asegúrate de tener permiso de su dueño para compartirla
+				<strong><i class="fa fa-lock" aria-hidden></i> PRIVADA</strong> - asegúrate de tener permiso de su dueño {}
+				para compartirla
 			</p>}
 			<p>
 				<label>
@@ -646,7 +647,9 @@ export class BattlePanel extends preact.Component<{ id: string, user: PSReplays[
 			</p> : <p>&nbsp;</p>}
 			{this.renderManagement()}
 			{!PSRouter.showingLeft() && <p>
-				<a href={PSRouter.href(PSRouter.leftLoc)} class="button"><i class="fa fa-caret-left" aria-hidden></i> Más repeticiones</a>
+				<a href={PSRouter.href(PSRouter.leftLoc)} class="button">
+					<i class="fa fa-caret-left" aria-hidden></i> Más repeticiones
+				</a>
 			</p>}
 		</div>;
 	}

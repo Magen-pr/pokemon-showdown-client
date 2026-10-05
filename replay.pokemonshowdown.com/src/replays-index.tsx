@@ -2,6 +2,7 @@
 import preact from '../../play.pokemonshowdown.com/js/lib/preact';
 import { type PSReplays, PSRouter } from "./replays";
 import { Net } from './utils';
+import { BattleLog } from '../../play.pokemonshowdown.com/src/battle-log';
 
 type ID = Lowercase<string>;
 declare function toID(input: string): ID;
@@ -28,7 +29,7 @@ function ReplayLink(props: {
 		(viewpointSwitched || props.switched ? '?p2' : '');
 
 	return <a href={PSRouter.href(url)} class="blocklink">
-		<small>{replay.format}{replay.rating ? ` (Puntuación: ${replay.rating})` : ''}<br /></small>
+		<small>{BattleLog.formatName(replay.format || '')}{replay.rating ? ` (Puntuación: ${replay.rating})` : ''}<br /></small>
 		{!!replay.private && <i class="fa fa-lock" aria-hidden></i>} {}
 		<strong>{replay.players[0]}</strong> vs. <strong>{replay.players[1]}</strong>
 		{props.children && <small><br />
