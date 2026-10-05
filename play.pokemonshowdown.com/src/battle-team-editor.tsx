@@ -1847,13 +1847,19 @@ class TeamTextbox extends preact.Component<{
 						<><i class="fa fa-copy" aria-hidden></i> {TL`[Copy]`}</>
 					)}
 				</button>
+				{/* outside the textbox while it's empty, so it doesn't get in the way of pasting */}
+				{editor.canAdd() && !this.setInfo.length && <> {}
+					<button class="button" onClick={this.addPokemon}>
+						<i class="fa fa-plus" aria-hidden></i> {TL`[Add Pokémon]`}
+					</button>
+				</>}
 			</p>
 			<div class="teameditor-text">
 				<textarea
 					class="textbox teamtextbox" style={`padding-left:${editor.narrow ? '50px' : '100px'}`}
 					onInput={this.input} onContextMenu={this.contextMenu} onKeyUp={this.keyUp} onKeyDown={this.keyDown}
 					onClick={this.keyUp} onChange={this.maybeReplaceLine}
-					placeholder=" Paste exported teams, pokepaste URLs, or JSON here" readOnly={editor.readonly}
+					placeholder={` ${TL`Paste exported teams, pokepaste URLs, or JSON here`}`} readOnly={editor.readonly}
 				/>
 				<textarea
 					class="textbox teamtextbox heighttester" tabIndex={-1} aria-hidden
@@ -1896,7 +1902,8 @@ class TeamTextbox extends preact.Component<{
 							{this.renderDetails(set, i)}
 						</div>];
 					})}
-					{editor.canAdd() && !(this.innerFocus && this.innerFocus.setIndex >= this.setInfo.length) && (
+					{editor.canAdd() && !!this.setInfo.length &&
+						!(this.innerFocus && this.innerFocus.setIndex >= this.setInfo.length) && (
 						<div style={`top:${this.bottomY() - 3}px;left:${editor.narrow ? 55 : 105}px;position:absolute`}>
 							<button class="button" onClick={this.addPokemon}>
 								<i class="fa fa-plus" aria-hidden></i> {TL`[Add Pokémon]`}

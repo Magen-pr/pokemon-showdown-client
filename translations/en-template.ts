@@ -611,6 +611,7 @@ export const translations: TranslationCatalog = {
 	"Not found": null,
 
 	// TRANSLATORS: for the team editor
+	"Paste exported teams, pokepaste URLs, or JSON here": null,
 	"[Add Pokémon]": null,
 	"(choose ability)": null,
 	"Details": null,
