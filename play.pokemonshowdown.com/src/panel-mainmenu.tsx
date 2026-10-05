@@ -129,6 +129,7 @@ export class MainMenuRoom extends PSRoom {
 			).then(res => {
 				if (!res?.username) {
 					PS.user.initializing = false;
+					PS.update();
 					return;
 				}
 				// | , ; are not valid characters in names
