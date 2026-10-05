@@ -366,6 +366,7 @@ export const translations: TranslationCatalog = {
 
 	// TRANSLATORS: for replay controls
 	"[Play]": "Reproducir",
+	"[Play (sound off)]": "Reproducir (sin sonido)",
 	"[Pause]": "Pausa",
 	"[First turn]": "Primer turno",
 	"[Prev turn]": "Turno anterior",

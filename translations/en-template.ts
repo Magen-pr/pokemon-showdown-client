@@ -366,6 +366,7 @@ export const translations: TranslationCatalog = {
 
 	// TRANSLATORS: for replay controls
 	"[Play]": null,
+	"[Play (sound off)]": null,
 	"[Pause]": null,
 	"[First turn]": null,
 	"[Prev turn]": null,
